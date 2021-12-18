@@ -1,0 +1,350 @@
+<html data-theme="dark">
+  <head>
+    <style>
+    {{STYLE}}
+    </style>
+  </head>
+  <body>
+    <main>
+      <div>
+        <div>
+          <div class="mt-0 mb-0">
+            <div class="grid max-w-screen-sm max-w-screen-xl max-h-screen gap-4 -opacity-60 glass xl:rounded-box text-base-content">
+              <div class="flex items-center w-full grid-flow-row grid-cols-12 gap-4 px-10 pt-1 pb-10 overflow-x-scroll overflow-y-hidden xl:px-4 xl:overflow-x-hidden xl:overflow-x-auto xl:grid">
+                <div class="flex flex-col flex-shrink-0 col-span-12 row-span-3 w-full maxplace-self-start">
+                  <div class="dropdown">
+                    <div tabindex="0">
+                      <div class="flex-grow-0 tabs w-full">
+                        <button id="act1" onclick="activate(this)" class="flex-1 tab tab-lifted tab-lg tab-border-none tab-active">Read File</button>
+                        <button id="act2" onclick="activate(this)" class="flex-1 tab tab-lifted tab-lg tab-border-none">Embed Code</button>
+                        <div>&nbsp;</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="grid flex-grow gap-3 p-6 shadow-xl rounded-xl bg-base-100 w-full rounded-tl-none">
+                    <div id="tabact1" class="cfr-content">
+                      <div class="flex items-center space-x-2">
+                          <div class="container mx-auto px-6">
+                            <div id="readDropZone" class="flex items-center justify-center w-full h-64 rounded border-dashed border-2 border-gray-300">
+                              <div class="flex flex-col items-center w-full">
+                                <div class="text-lg font-extrabold">Drop a png file here</div>
+                                <div class="text-sm text-base-content text-opacity-60">Embedded source code will be displayed.</div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="mr-0 ml-0 mt-12 mb-12 divider text-base-content text-opacity-40">Embedded Code</div>
+                      <div class="form-control">
+                      <textarea id="tarea1" class="w-full h-48 textarea textarea-bordered">
+                      </textarea>
+                      </div>
+                    </div>
+                    <div id="tabact2" class="cfr-content hidden">
+                      <div class="flex-grow-0 tabs w-full">
+                        <div class="flex-1 items-center space-x-2">
+                          <div class="container mx-auto px-6">
+                            <div class="form-control items-center">
+                              <label class="flex space-x-4 cursor-pointer label">
+                                <span class="label-text">In Place</span> 
+                                <input type="checkbox" id="inplace" disabled=disabled class="toggle">
+                              </label>
+                            </div>
+                          </div>
+                          <div class="container mx-auto px-6">
+                            <div class="indicator w-full">
+                              <div id="writeDropZoneBadge" class="indicator-item"></div>
+                              <div id="writeDropZone" class="flex items-center justify-center w-full h-64 rounded border-dashed border-2 border-gray-300">
+                                <div class="flex flex-col items-center w-full">
+                                  <div id="writeDropZoneFileName" class="text-lg font-extrabold">Drop a png file here</div>
+                                  <div class="text-sm text-base-content text-opacity-60">Source code will be embedded.</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="flex-1 items-center space-x-2">
+                          <div class="container mx-auto px-6">
+                            <div class="form-control items-center">
+                              <label class="flex space-x-4 cursor-pointer label">
+                                <span class="label-text">Code Editor</span> 
+                                <input type="checkbox" id="usecodeeditor" onclick="codeoption(this)" class="toggle">
+                              </label>
+                            </div>
+                          </div>
+                          <div id="codeoption1" class="cfr-codearea">
+                            <div class="flex-1 items-center space-x-2">
+                                <div class="container mx-auto px-6">
+                                  <div class="indicator w-full">
+                                    <div id="sourceDropZoneBadge" class="indicator-item"></div>
+                                    <div id="sourceDropZone" class="flex items-center justify-center w-full h-64 rounded border-dashed border-2 border-gray-300">
+                                      <div class="flex flex-col items-center w-full">
+                                        <div id="sourceDropZoneFileName" class="text-lg font-extrabold">Drop code file here</div>
+                                        <div class="text-sm text-base-content text-opacity-60">The content to embed.</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div id="codeoption2" class="cfr-codearea hidden">
+                            <div class="indicator w-full">
+                              <div id="codeAreaBadge" class="indicator-item"></div>
+                              <div class="flex w-full form-control">
+                                <textarea id="codearea" class="textarea textarea-bordered h-64">
+                                </textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex-grow-0 tabs w-full mt-4">
+                        <div class="flex-1 items-center space-x-2">
+                          <div class="indicator w-full">
+                            <div id="destFolderBadge" class="indicator-item mr-6"></div>
+                            <div class="container mx-auto px-6">
+                              <div class="form-control">
+                                <input type="text" id="destFolder" placeholder="Drop or enter destination folder here" class="input rounded border-dashed border-2 border-gray-300">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mr-0 ml-0 mt-8 mb-6 divider text-base-content text-opacity-40">
+                        <button id="embedcodebutton" onclick="writeEmbed()" class="btn" disabled=disabled>Embed Code</button> 
+                      </div>
+
+                      <div class="alert">
+                        <div class="flex-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#009688" class="flex-shrink-0 w-6 h-6 mx-2">     
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg> 
+                          <label>
+                            <h4>How does this work?</h4> 
+                            <br>
+                            <p class="text-sm text-base-content text-opacity-60">
+                            Use the [Code Editor] toggle to either embed the content of a code file or to write the code directly in the text area.
+                            </p>
+                          </label>
+                        </div> 
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </main>
+    <script>
+      function activate(element) {
+        let siblings = element.parentNode.querySelectorAll("button");
+        for (let item of siblings) {
+          if (item == element) {
+            item.classList.add("tab-active");
+          } else {
+            item.classList.remove("tab-active");
+          }
+        }
+        let content = document.getElementsByClassName("cfr-content");
+        for (let contentarea of content) {
+          if (contentarea.id == `tab${element.id}`) {
+            contentarea.classList.remove("hidden");
+          } else {
+            contentarea.classList.add("hidden");
+          }
+        }
+      }
+
+      function codeoption(cb) {
+        if(cb.checked) {
+          document.getElementById("codeoption2").classList.remove("hidden");
+          document.getElementById("codeoption1").classList.add("hidden");
+        }
+        else {
+          document.getElementById("codeoption1").classList.remove("hidden");
+          document.getElementById("codeoption2").classList.add("hidden");
+        }
+        updateEmbedButton();
+      }
+
+      var writeFileName = "";
+      var writeFilePath = "";
+      var sourceFilePath = "";
+
+      function updateEmbedButton() {
+        let button = document.getElementById("embedcodebutton");
+        var disable = true;
+        if(!isEmptyDestFolder()) {
+          if (writeFilePath != "") {
+            if(document.getElementById("usecodeeditor").checked) {
+              if(document.getElementById("codearea").value.trim() != "") {
+                disable = false;
+              }
+            } else {
+              if (sourceFilePath != "") {
+                disable = false;
+              }
+            }
+          }
+        }
+        button.disabled = disable;
+      }
+
+      function updateCodeAreaState() {
+        if(document.getElementById("codearea").value.trim() != "") {
+          document.getElementById("codeAreaBadge").classList.add("badge");
+          document.getElementById("codeAreaBadge").classList.add("badge-accent");
+        }
+        else {
+          document.getElementById("codeAreaBadge").classList.remove("badge");
+          document.getElementById("codeAreaBadge").classList.remove("badge-accent");
+        }
+        updateEmbedButton();
+      }
+
+      function updateDestFolderState() {
+        if(isEmptyDestFolder()) {
+          document.getElementById("destFolderBadge").classList.remove("badge");
+          document.getElementById("destFolderBadge").classList.remove("badge-accent");
+        }
+        else {
+          document.getElementById("destFolderBadge").classList.add("badge");
+          document.getElementById("destFolderBadge").classList.add("badge-accent");
+        }
+        updateEmbedButton();
+      }
+
+      function isEmptyDestFolder() {
+        let value = document.getElementById("destFolder").value.trim();
+        if(value == "" || value == document.getElementById("destFolder").placeholder) {
+          return true;
+        }
+        return false;
+      }
+
+      function writeEmbed() {
+        let button = document.getElementById("embedcodebutton");
+        button.innerText = "Embedding";
+        button.classList.add("loading");
+        button.disabled = true;
+
+        var code;
+        var sourceType;
+        if(document.getElementById("usecodeeditor").checked) {
+          sourceType = "string";
+          code = document.getElementById("codearea").value.trim();
+        } else {
+          sourceType = "file";
+          code = sourceFilePath;
+        }
+        wembedcode(
+          writeFilePath,
+          sourceType,
+          code,
+          `${document.getElementById("destFolder").value.trim()}/embed-${writeFileName}`
+        );
+
+        setTimeout(() => {
+          button.innerText = "Done";
+          button.classList.remove("loading");
+          button.disabled = false;
+          setTimeout(() => {
+            button.innerText = "Embed Code";
+          }, 2000);
+        }, 2000);
+
+      }
+
+      window.onload = function() {
+        var readDropZone = document.getElementById('readDropZone');
+        readDropZone.addEventListener('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+        readDropZone.addEventListener('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            for (const file of e.dataTransfer.files) {
+              wlog(JSON.stringify(file.webkitRelativePath));
+              if (file.type.match(/image.*/)) {
+                  var reader = new FileReader();
+                  reader.onload = function(e2) {
+                      wrawimage("read", e2.target.result).then((result) => {
+                        let textarea = document.getElementById("tarea1");
+                        textarea.value = result;
+                      });
+                  }
+                  reader.readAsDataURL(file);
+              }
+            }
+        });
+
+        var writeDropZone = document.getElementById('writeDropZone');
+        writeDropZone.addEventListener('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+        writeDropZone.addEventListener('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            for (const file of e.dataTransfer.files) {
+              wlog(JSON.stringify(file.webkitRelativePath));
+              if (file.type.match(/image.*/)) {
+                var reader = new FileReader();
+                reader.onload = function(e2) {
+                  wrawimage("put", e2.target.result).then((result) => {
+                    if (result == "*err*") {
+                      return;
+                    }
+                    writeFilePath = result;
+                    writeFileName = file.name;
+                    document.getElementById("writeDropZoneFileName").innerHTML = file.name;
+                    document.getElementById("writeDropZoneBadge").classList.add("badge");
+                    document.getElementById("writeDropZoneBadge").classList.add("badge-accent");
+                    updateEmbedButton();
+                  });
+                }
+                reader.readAsDataURL(file);
+              }
+            }
+        });
+
+        var sourceDropZone = document.getElementById('sourceDropZone');
+        sourceDropZone.addEventListener('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+        sourceDropZone.addEventListener('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            for (const file of e.dataTransfer.files) {
+              wlog(JSON.stringify(file.webkitRelativePath));
+              var reader = new FileReader();
+              reader.onload = function(e2) {
+                wsourcecode("put", e2.target.result).then((result) => {
+                  sourceFilePath = result;
+                  document.getElementById("sourceDropZoneFileName").innerHTML = file.name;
+                    document.getElementById("sourceDropZoneBadge").classList.add("badge");
+                    document.getElementById("sourceDropZoneBadge").classList.add("badge-accent");
+                    updateEmbedButton();
+                });
+              }
+              reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("codearea").addEventListener("input", function() {
+          updateCodeAreaState();
+        });
+
+        document.getElementById("destFolder").addEventListener("input", function() {
+          updateDestFolderState();
+        });
+
+      };
+
+    </script>
+  </body>
+</html>
