@@ -1,4 +1,6 @@
-github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
-github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/glacjay/goini v0.0.0-20161120062552-fd3024d87ee2 h1:+SEORW3KptcFnlhTbn7N0drG3AFnrcmBDWDyQ3Bt06o=
+github.com/glacjay/goini v0.0.0-20161120062552-fd3024d87ee2/go.mod h1:1vW2LGZb8uLSqmYBOdxvhiwATuLtmyUTMezM3cHrIHQ=
+github.com/rakyll/globalconf v0.0.0-20180912185831-87f8127c421f h1:mVzXRrAR2ipnx3pWDsbWz9Y7+EC+I96EBellUayAyBU=
+github.com/rakyll/globalconf v0.0.0-20180912185831-87f8127c421f/go.mod h1:lvWGGAzNhA3ux6f0tkwQ94lLT69Nj/wTRg9781V7M3M=
 github.com/webview/webview v0.0.0-20210330151455-f540d88dde4e h1:z780M7mCrdt6KiICeW9SGirvQjxDlrVU+n99FO93nbI=
 github.com/webview/webview v0.0.0-20210330151455-f540d88dde4e/go.mod h1:rpXAuuHgyEJb6kXcXldlkOjU6y4x+YcASKKXJNUhh0Y=

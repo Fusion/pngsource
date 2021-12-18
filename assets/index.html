@@ -103,7 +103,7 @@
                             <div id="destFolderBadge" class="indicator-item mr-6"></div>
                             <div class="container mx-auto px-6">
                               <div class="form-control">
-                                <input type="text" id="destFolder" placeholder="Drop or enter destination folder here" class="input rounded border-dashed border-2 border-gray-300">
+                                <input type="text" id="destFolder" placeholder="Drop or enter destination folder here" class="input rounded border-dashed border-2 border-gray-300" value="{{DESTPATH}}">
                               </div>
                             </div>
                           </div>
@@ -135,6 +135,17 @@
           </div>
     </main>
     <script>
+      function debounce(func, timeout = 2000){
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+      }
+
+      let updatedestfolderpref = debounce(() => 
+        wupdatedestfolderpref(document.getElementById("destFolder").value.trim()));
+
       function activate(element) {
         let siblings = element.parentNode.querySelectorAll("button");
         for (let item of siblings) {
@@ -215,6 +226,7 @@
 
       function isEmptyDestFolder() {
         let value = document.getElementById("destFolder").value.trim();
+
         if(value == "" || value == document.getElementById("destFolder").placeholder) {
           return true;
         }
@@ -341,6 +353,7 @@
 
         document.getElementById("destFolder").addEventListener("input", function() {
           updateDestFolderState();
+          updatedestfolderpref();
         });
 
       };
