@@ -10,6 +10,7 @@ require (
 
 require (
 	github.com/akavel/rsrc v0.10.2 // indirect
+	github.com/crazy-max/xgo v0.7.6 // indirect
 	github.com/dchest/jsmin v0.0.0-20160823214000-faeced883947 // indirect
 	github.com/glacjay/goini v0.0.0-20161120062552-fd3024d87ee2 // indirect
 	github.com/josephspurrier/goversioninfo v1.3.0 // indirect

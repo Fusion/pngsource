@@ -1,5 +1,7 @@
 github.com/akavel/rsrc v0.10.2 h1:Zxm8V5eI1hW4gGaYsJQUhxpjkENuG91ki8B4zCrvEsw=
 github.com/akavel/rsrc v0.10.2/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
+github.com/crazy-max/xgo v0.7.6 h1:udum4ZNH+l/+epvsw8thnGUR3rGT+jWThQKc5UJdfHc=
+github.com/crazy-max/xgo v0.7.6/go.mod h1:m/aqfKaN/cYzfw+Pzk7Mk0tkmShg3/rCS4Zdhdugi4o=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dchest/jsmin v0.0.0-20160823214000-faeced883947 h1:Fm10/KNuoAyBm2P5P5H91Xy21hGcZnBdjR+cMdytv1M=
