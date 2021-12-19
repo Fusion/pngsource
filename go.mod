@@ -1,4 +1,4 @@
-module github.com/fusion/pngsource
+module github.com/fusion/PNGSource
 
 go 1.17
 
