@@ -97,7 +97,8 @@
                           </div>
                         </div>
                       </div>
-                      <div class="flex-grow-0 tabs w-full mt-4">
+                      <!--! Future optimization: using file dialogs for now. -->
+                      <div class="flex-grow-0 tabs w-full mt-4 hidden">
                         <div class="flex-1 items-center space-x-2">
                           <div class="indicator w-full">
                             <div id="destFolderBadge" class="indicator-item mr-6"></div>
@@ -120,6 +121,11 @@
                           </svg> 
                           <label>
                             <h4>How does this work?</h4> 
+                            <br>
+                            <p class="text-sm text-base-content text-opacity-60">
+                            At this time, [In Place] is not implemented.<br>
+                            It may be implemented in the future.
+                            </p>
                             <br>
                             <p class="text-sm text-base-content text-opacity-60">
                             Use the [Code Editor] toggle to either embed the content of a code file or to write the code directly in the text area.
@@ -225,6 +231,10 @@
       }
 
       function isEmptyDestFolder() {
+        // In the future, if we use the destination folder enhancement,
+        // we will return a relevant value. For now, get out of the way please.
+        if (true) return false;
+
         let value = document.getElementById("destFolder").value.trim();
 
         if(value == "" || value == document.getElementById("destFolder").placeholder) {
@@ -249,6 +259,7 @@
           code = sourceFilePath;
         }
         wembedcode(
+          writeFileName,
           writeFilePath,
           sourceType,
           code,
@@ -258,12 +269,18 @@
         setTimeout(() => {
           button.innerText = "Done";
           button.classList.remove("loading");
+        }, 2000);
+
+      }
+
+      function resetEmbedButtonState(saved) {
+          let button = document.getElementById("embedcodebutton");
+          button.classList.remove("loading");
           button.disabled = false;
+          button.innerText = saved ? "Saved" : "Not saved";
           setTimeout(() => {
             button.innerText = "Embed Code";
           }, 2000);
-        }, 2000);
-
       }
 
       window.onload = function() {

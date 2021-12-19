@@ -9,6 +9,7 @@ import (
 
 	"github.com/fusion/pngsource/assets"
 	"github.com/fusion/pngsource/lib"
+	"github.com/ncruces/zenity"
 	"github.com/rakyll/globalconf"
 	"github.com/webview/webview"
 	//"github.com/davecgh/go-spew/spew"
@@ -37,7 +38,6 @@ func main() {
 	globalconf.Register("webview", f)
 	preferences, _ := globalconf.New("pngsource")
 	preferences.ParseAll()
-	l.Println("dest:", *flagDestPath)
 
 	css, _ := assets.Content.ReadFile("css/style.css")
 	rawpage, _ := assets.Content.ReadFile("index.html")
@@ -82,16 +82,32 @@ func main() {
 	})
 
 	w.Bind("wembedcode", func(
+		writeFileName string,
 		writepath string,
 		sourcetype string,
 		sourcepathorcode string,
 		destfolder string) {
+
+		// destFolder is not relevant at this time as we are using
+		// a file dialog instead.
+		selectedPath, err := zenity.SelectFileSave(
+			zenity.Title("Save File with Embed"),
+			zenity.Filename(writeFileName),
+			zenity.FileFilters{{"PNG files", []string{"*.png"}}},
+			zenity.ConfirmOverwrite(),
+		)
+		if err != nil { // e.g. dialog canceled
+			w.Eval("resetEmbedButtonState(false)")
+			return
+		}
 		if sourcetype == "string" {
 			sourcepath := lib.Write_content_from_data(l, "put", []byte(sourcepathorcode))
-			lib.Write_content_dynamic_config(l, writepath, sourcepath, destfolder)
+			lib.Write_content_dynamic_config(l, writepath, sourcepath, selectedPath)
 		} else {
-			lib.Write_content_dynamic_config(l, writepath, sourcepathorcode, destfolder)
+			lib.Write_content_dynamic_config(l, writepath, sourcepathorcode, selectedPath)
 		}
+
+		w.Eval("resetEmbedButtonState(true)")
 	})
 
 	w.Bind("wtest", func() {
