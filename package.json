@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "go run cmd/webview.go",
-    "css": "postcss assets/css/source.css -o assets/css/style.css"
+    "css": "postcss assets/css/source.css -o assets/css/style.css",
+    "package": "xgo --go=1.17.2 --dest packaging/windows --targets=windows/amd64 github.com/fusion/pngsource/pngsource"
   },
   "dependencies": {
     "daisyui": "^1.16.6"
