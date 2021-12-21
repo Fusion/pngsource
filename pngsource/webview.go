@@ -32,6 +32,20 @@ func main() {
 	debug := true
 	l := log.New(os.Stderr, "", 0)
 
+        getActualBytes := func(sourceString string) []byte {
+          comma := strings.Index(sourceString, ",")
+          if comma == -1 {
+            return []byte(sourceString)
+          }
+          subcontent := sourceString[comma+1:]
+          debased, err := base64.StdEncoding.DecodeString(subcontent)
+          if err != nil {
+            l.Println("BASE64 Oopsy.")
+            return []byte("*err*")
+          }
+          return debased
+        }
+
 	f := flag.NewFlagSet("webview", flag.ContinueOnError)
 	flagDestPath := f.String("dest", "", "destination path")
 
@@ -62,27 +76,11 @@ func main() {
 	})
 
 	w.Bind("wrawimage", func(action, content string) string {
-		subcontent := content[22:]
-		debased, err := base64.StdEncoding.DecodeString(subcontent)
-		if err != nil {
-			l.Println("BASE64 Oopsy.")
-                        l.Println(content)
-                        l.Println(2"--")
-			return "*err*"
-		}
-		return lib.Write_content_from_data(l, action, debased)
+		return lib.Write_content_from_data(l, action, getActualBytes(content))
 	})
 
 	w.Bind("wsourcecode", func(action, content string) string {
-		subcontent := content[37:]
-		debased, err := base64.StdEncoding.DecodeString(subcontent)
-		if err != nil {
-			l.Println("BASE64 Oopsy.")
-                        l.Println(content)
-                        l.Println(2"--")
-			return "*err*"
-		}
-		return lib.Write_content_from_data(l, action, debased)
+		return lib.Write_content_from_data(l, action, getActualBytes(content))
 	})
 
 	w.Bind("wembedcode", func(
