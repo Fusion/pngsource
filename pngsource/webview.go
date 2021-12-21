@@ -65,8 +65,9 @@ func main() {
 		subcontent := content[22:]
 		debased, err := base64.StdEncoding.DecodeString(subcontent)
 		if err != nil {
-			l.Println("BASE64 Oopsy.")
-			return "*err*"
+                  l.Println(content)
+                  l.Println("BASE64 (1) Oopsy.")
+                  return "*err*"
 		}
 		return lib.Write_content_from_data(l, action, debased)
 	})
@@ -75,8 +76,9 @@ func main() {
 		subcontent := content[37:]
 		debased, err := base64.StdEncoding.DecodeString(subcontent)
 		if err != nil {
-			l.Println("BASE64 Oopsy.")
-			return "*err*"
+                  l.Println(content)
+                  l.Println("BASE64 (2) Oopsy.")
+                  return "*err*"
 		}
 		return lib.Write_content_from_data(l, action, debased)
 	})
