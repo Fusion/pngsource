@@ -28,6 +28,20 @@ func (s StringValue) Set(newValue string) error {
 	return nil
 }
 
+func getActualString(sourceString string) string {
+  comma := strings.Index(sourceString, ",")
+  if comma == -1 {
+    return sourceString
+  }
+  subcontent := content[comma:]
+  debased, err := base64.StdEncoding.DecodeString(subcontent)
+  if err != nil {
+    l.Println("BASE64 Oopsy.")
+    return "*err*"
+  }
+  return debased
+}
+
 func main() {
 	debug := true
 	l := log.New(os.Stderr, "", 0)
@@ -62,25 +76,11 @@ func main() {
 	})
 
 	w.Bind("wrawimage", func(action, content string) string {
-		subcontent := content[22:]
-		debased, err := base64.StdEncoding.DecodeString(subcontent)
-		if err != nil {
-                  l.Println(content)
-                  l.Println("BASE64 (1) Oopsy.")
-                  return "*err*"
-		}
-		return lib.Write_content_from_data(l, action, debased)
+		return lib.Write_content_from_data(l, action, getActualString(content))
 	})
 
 	w.Bind("wsourcecode", func(action, content string) string {
-		subcontent := content[37:]
-		debased, err := base64.StdEncoding.DecodeString(subcontent)
-		if err != nil {
-                  l.Println(content)
-                  l.Println("BASE64 (2) Oopsy.")
-                  return "*err*"
-		}
-		return lib.Write_content_from_data(l, action, debased)
+		return lib.Write_content_from_data(l, action, getActualString(content))
 	})
 
 	w.Bind("wembedcode", func(
