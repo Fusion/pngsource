@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "go run cmd/webview.go",
     "css": "postcss assets/css/source.css -o assets/css/style.css",
-    "package": "xgo --go=1.17.2 --dest packaging/windows --targets=windows/amd64 github.com/fusion/pngsource/pngsource"
+    "build-windows": "xgo --branch feature/packaging --go=1.17.2 --dest dist/windows --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource",
+    "package-windows": "cp -r packaging/windows/* dist/windows/ && cd dist/windows && makensis pngsource.nsi",
+    "target-windows": "yarn build-windows && yarn package-windows"
   },
   "dependencies": {
     "daisyui": "^1.16.6"
