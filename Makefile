@@ -24,7 +24,7 @@ buildlinux:
 linux: buildlinux
 
 buildwindows:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows --ldflags="-H windowsgui" --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
 
 packagewindows:
 	@cp -r packaging/windows/* dist/windows/ \
