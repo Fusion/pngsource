@@ -7,11 +7,11 @@
 	<key>CFBundleDisplayName</key>
 	<string>PNGSource</string>
 	<key>CFBundleExecutable</key>
-	<string>pngsource</string>
+	<string>pngsource-darwin-10.12-arm64</string>
 	<key>CFBundleIconFile</key>
 	<string>pngsource.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.voilaweb.PNGSource</string>
+	<string>com.voilaweb.pngsource</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>CFBundleName</key>
@@ -22,14 +22,14 @@
 	<string>0.1.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>Custom App</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>pngsource</string>
-			</array>
-		</dict>
+          <dict>
+            <key>CFBundleURLName</key>
+              <string>Custom App</string>
+            <key>CFBundleURLSchemes</key>
+              <array>
+                <string>pngsource</string>
+              </array>
+          </dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>20211201.205724</string>

@@ -7,7 +7,10 @@
     "css": "postcss assets/css/source.css -o assets/css/style.css",
     "build-windows": "xgo --branch feature/packaging --go=1.17.2 --dest dist/windows --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource",
     "package-windows": "cp -r packaging/windows/* dist/windows/ && cd dist/windows && makensis pngsource.nsi",
-    "target-windows": "yarn build-windows && yarn package-windows"
+    "make-windows": "yarn build-windows && yarn package-windows",
+    "build-macos": "xgo --branch feature/packaging --go=1.17.2 --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource",
+    "package-macos": "rm -rf dist/macos/pngsource.app && cp -r packaging/macos/* dist/macos/ && mkdir -p dist/macos/pngsource.app/Contents/MacOS && cp dist/macos/pngsource-darwin-10.12-arm64 dist/macos/pngsource.app/Contents/MacOS/ &&  dd if=/dev/zero of=dist/macos/PNGSource.dmg bs=1M count=6 status=progress && mkfs.hfsplus -v PNGSource dist/macos/PNGSource.dmg && sudo mkdir -pv /mnt/dmgwork && sudo mount -o loop dist/macos/PNGSource.dmg /mnt/dmgwork && sudo cp -arv dist/macos/pngsource.app /mnt/dmgwork/ && sudo umount /mnt/dmgwork",
+    "make-macos": "yarn build-windows && yarn package-windows"
   },
   "dependencies": {
     "daisyui": "^1.16.6"
