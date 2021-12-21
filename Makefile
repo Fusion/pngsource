@@ -1,41 +1,47 @@
 GO ?= 1.17.2
 BRANCH ?= main
+VERSION ?= 0.0.0
 
 help:
-	echo "cli|dev|css|platforms|release"
+	@echo "cli|dev|css|platforms|release"
 
 devcli:
-	go run cmd/pngsource.go
+	@go run cmd/pngsource.go
 
 cli:
-	go build -o dist/cli/pngsource cmd/pngsource.go 
+	@go build -o dist/cli/pngsource cmd/pngsource.go 
 
 devweb:
-	go run pngsource/webview.go
+	@go run pngsource/webview.go
 
 css:
-	yarn css
+	@yarn css
 
 # Assuming Linux... yup.
 buildlinux:
-	go build -o dist/linux/pngsourceapp pngsource/webview.go
+	@go build -o dist/linux/pngsourceapp pngsource/webview.go
 
 linux: buildlinux
 
 buildwindows:
-	xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
 
 packagewindows:
-	cp -r packaging/windows/* dist/windows/ && cd dist/windows && makensis pngsource.nsi
+	@cp -r packaging/windows/* dist/windows/ \
+	&& cd dist/windows \
+	&& cat pngsource.nsi.tmpl | sed "s/{{VERSION}}/$(VERSION)/g"  > pngsource.nsi \
+	&& makensis pngsource.nsi
 
 windows: buildwindows packagewindows
 
 buildmacos:
-	xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
 
 packagemacos:
-	rm -rf dist/macos/pngsource.app  \
+	@rm -rf dist/macos/pngsource.app  \
 	&& cp -r packaging/macos/* dist/macos/  \
+	&& cat dist/macos/pngsource.app/Contents/Info.plist.tmpl | sed  "s/{{VERSION}}/$(VERSION)/g"  \
+		> dist/macos/pngsource.app/Contents/Info.plist \
 	&& mkdir -p dist/macos/pngsource.app/Contents/MacOS  \
 	&& cp dist/macos/pngsource-darwin-10.12-arm64 dist/macos/pngsource.app/Contents/MacOS/  \
 	&&  dd if=/dev/zero of=dist/macos/PNGSource.dmg bs=1M count=6 status=progress  \

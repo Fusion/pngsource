@@ -1,3 +1,19 @@
+# BUILDING
+
+`make platforms VERSION=<semantic version>`
+
+or
+
+`make platforms BRANCH=<git branch> VERSION=<semantic version>`
+
+or
+
+`make platforms GO=<go version> BRANCH=<git branch> VERSION=<semantic version>`
+
+Full-on release:
+
+`make release` instead of `make platforms`
+
 # TODO
 
 # Notes
