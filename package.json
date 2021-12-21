@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "go run cmd/webview.go",
     "css": "postcss assets/css/source.css -o assets/css/style.css"
   },
   "dependencies": {
