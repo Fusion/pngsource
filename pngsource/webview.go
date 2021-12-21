@@ -37,7 +37,7 @@ func main() {
           if comma == -1 {
             return []byte(sourceString)
           }
-          subcontent := sourceString[comma:]
+          subcontent := sourceString[comma+1:]
           debased, err := base64.StdEncoding.DecodeString(subcontent)
           if err != nil {
             l.Println("BASE64 Oopsy.")
