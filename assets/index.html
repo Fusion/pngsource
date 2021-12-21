@@ -353,6 +353,9 @@
               var reader = new FileReader();
               reader.onload = function(e2) {
                 wsourcecode("put", e2.target.result).then((result) => {
+                  if (result == "*err*") {
+                    return;
+                  }
                   sourceFilePath = result;
                   document.getElementById("sourceDropZoneFileName").innerHTML = file.name;
                     document.getElementById("sourceDropZoneBadge").classList.add("badge");
