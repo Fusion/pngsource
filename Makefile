@@ -8,8 +8,20 @@ help:
 devcli:
 	@go run cmd/pngsource.go
 
-cli:
-	@go build -o dist/cli/pngsource cmd/pngsource.go 
+linuxcli:
+	@go build -o dist/linux/cli/pngsource cmd/pngsource.go 
+
+windowscli:
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows/cli --ldflags="-H windowsgui" --pkg cmd --targets=windows/amd64 github.com/fusion/pngsource \
+	&& sudo chown -R $$(id -u) dist \
+	&& mv dist/windows/cli/cmd-windows-4.0-amd64.exe dist/windows/cli/pngsource.exe
+
+macoscli:
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --targets=darwin/arm64 github.com/fusion/pngsource \
+	&& sudo chown -R $$(id -u) dist \
+	&& mv dist/macos/cli/cmd-darwin-10.12-arm64 dist/macos/cli/pngsource
+
+cli: linuxcli windowscli macoscli
 
 devweb:
 	@go run pngsource/webview.go
@@ -18,26 +30,26 @@ css:
 	@yarn css
 
 # Assuming Linux... yup.
-buildlinux:
+buildlinuxapp:
 	@go build -o dist/linux/pngsourceapp pngsource/webview.go
 
-linux: buildlinux
+linuxapp: buildlinuxapp
 
-buildwindows:
+buildwindowsapp:
 	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows --ldflags="-H windowsgui" --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
 
-packagewindows:
+packagewindowsapp:
 	@cp -r packaging/windows/* dist/windows/ \
 	&& cd dist/windows \
 	&& cat pngsource.nsi.tmpl | sed "s/{{VERSION}}/$(VERSION)/g"  > pngsource.nsi \
 	&& makensis pngsource.nsi
 
-windows: buildwindows packagewindows
+windowsapp: buildwindowsapp packagewindowsapp
 
-buildmacos:
+buildmacosapp:
 	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
 
-packagemacos:
+packagemacosapp:
 	@rm -rf dist/macos/pngsource.app  \
 	&& cp -r packaging/macos/* dist/macos/  \
 	&& cat dist/macos/pngsource.app/Contents/Info.plist.tmpl | sed  "s/{{VERSION}}/$(VERSION)/g"  \
@@ -51,8 +63,20 @@ packagemacos:
 	&& sudo cp -arv dist/macos/pngsource.app /mnt/dmgwork/  \
 	&& sudo umount /mnt/dmgwork
 
-macos: buildmacos packagemacos
+macosapp: buildmacosapp packagemacosapp
 
-platforms: linux windows macos
+app: linuxapp windowsapp macosapp
 
-release: cli css platforms
+clean:
+	@rm -rf dist/*
+
+collect:
+	@mkdir -p dist/release \
+	&& zip dist/release/pngsource-cli-linux.zip dist/linux/cli/pngsource \
+	&& zip dist/release/pngsource-cli-windows.zip dist/windows/cli/pngsource.exe \
+	&& zip dist/release/pngsource-cli-macos.zip dist/macos/cli/pngsource \
+	&& cp dist/linux/pngsourceapp dist/release/ \
+	&& cp dist/windows/pngsource_installer.exe dist/release/ \
+	&& cp dist/macos/PNGSource.dmg dist/release/
+
+release: cli css app collect
