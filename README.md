@@ -1,4 +1,32 @@
-# BUILDING
+# PNGSource
+
+A tool that makes it easy to embed source code in a PNG file. It can also read source code previously embedded, of course!
+
+![Screenshot](screenshot.png)
+
+## Benefits
+
+I detest losing source code, and I like creating diagrams using a descriptive language (be it YAML, UML, Python...) -- Diagrams.com (formerly Draw.io) lets users save their code alongside the generated PNG files. So, that's our prior art! (I tried to remain compatible with their encoding)
+
+## What it does
+
+If you provide PNGSource with the path to an existing PNG file (or drag/drop) it will display that file's decoded `text` chunk, if it exists.
+
+You can also provide a PNG file and a text file (or enter text manually) and embed the text in the file, in a `text` chunk.
+
+ ## What it does not do
+
+There is no stenography involved here. Although I am planning on performing a few tests to see if this would let me embed a reasonable amount of code in any image format.
+
+# Using
+
+Simply download a CLI tool for your platform, or the GUI application (installer on Windows, disk image on MacOs, standalone on Linux)
+
+Run the cli command with `--help` to see what you can do. The GUI app should be self explanatory (I hope!)
+
+# Building
+
+Only if you plan on contributing or need a different platform:
 
 `make platforms VERSION=<semantic version>`
 
@@ -14,12 +42,12 @@ Full-on release:
 
 `make release` instead of `make platforms`
 
-# TODO
+# FAQ
 
-# Notes
+**Is this an Electron app?**
 
-Under the hood, I rely on the Go Zenity package to display a save dialog:
-- On MacOS, the actual dialog work is delegated to OSAScript.
-- On Linux and Windows I may need to embed https://github.com/ncruces/zenity.
+No. It is significantly smaller and less greedy than an Electron-based application. It does, however, rely on a combination of go, webview, tailwindcss and native dialogs.
 
-In fact, https://pkg.go.dev/github.com/gen2brain/dlgs looked like a fine package, until I fount out it can only be used to open files, not save them(!) ... plus, it also uses zenity under the hood.
+**Why isn't it working for me?**
+
+Please create an issue. If possible, include the files you were working with (image and code) so that I can reproduce the issue.
