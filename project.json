@@ -1,0 +1,25 @@
+{
+ "name": "pngsource",
+ "description": "Embed source code in png files",
+ "author": {
+  "name": "",
+  "email": ""
+ },
+ "version": "1.0.0",
+ "binaryname": "pngsource",
+ "frontend": {
+  "dir": "assets",
+  "install": "npm install",
+  "build": "npm run build",
+  "bridge": ".",
+  "serve": "npm run serve"
+ },
+ "tags": "",
+ "WailsVersion": "",
+ "CrossCompile": false,
+ "Platform": "",
+ "Architecture": "",
+ "LdFlags": "",
+ "GoPath": "",
+ "UseFirebug": false
+}

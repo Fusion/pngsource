@@ -149,6 +149,26 @@
         };
       }
 
+      function fixBinds() {
+        // Map bridge if wail is our active framework
+        if(typeof wlog != "undefined") {
+          return;
+        }
+
+        if(typeof backend != "undefined" && typeof backend.AppHandler != "undefined") {
+          for (let [fnname, fndef] of Object.entries(backend.AppHandler)) {
+            window[fnname.toLowerCase()] = fndef;
+          }
+        }
+
+        if(typeof wails != "undefined" && typeof wails.Events != "undefined") {
+          wails.Events.On("eval", payload => {
+            console.log(" ** EVENT ** ")
+            eval(payload);
+          });
+        }
+      }
+
       let updatedestfolderpref = debounce(() => 
         wupdatedestfolderpref(document.getElementById("destFolder").value.trim()));
 
@@ -244,6 +264,8 @@
       }
 
       function writeEmbed() {
+        fixBinds();
+
         let button = document.getElementById("embedcodebutton");
         button.innerText = "Embedding";
         button.classList.add("loading");
@@ -293,6 +315,9 @@
         readDropZone.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            fixBinds();
+
             for (const file of e.dataTransfer.files) {
               wlog(JSON.stringify(file.webkitRelativePath));
               if (file.type.match(/image.*/)) {
@@ -317,6 +342,9 @@
         writeDropZone.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            fixBinds();
+
             for (const file of e.dataTransfer.files) {
               wlog(JSON.stringify(file.webkitRelativePath));
               if (file.type.match(/image.*/)) {
@@ -348,6 +376,9 @@
         sourceDropZone.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            fixBinds();
+
             for (const file of e.dataTransfer.files) {
               wlog(JSON.stringify(file.webkitRelativePath));
               var reader = new FileReader();

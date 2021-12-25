@@ -24,14 +24,14 @@ macoscli:
 cli: linuxcli windowscli macoscli
 
 devweb:
-	@go run pngsource/webview.go
+	@go run pngsource/gui.go
 
 css:
 	@yarn css
 
 # Assuming Linux... yup.
 buildlinuxapp:
-	@go build -o dist/linux/pngsourceapp pngsource/webview.go
+	@go build -o dist/linux/pngsourceapp pngsource/gui.go
 
 linuxapp: buildlinuxapp
 
