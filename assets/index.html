@@ -160,13 +160,6 @@
             window[fnname.toLowerCase()] = fndef;
           }
         }
-
-        if(typeof wails != "undefined" && typeof wails.Events != "undefined") {
-          wails.Events.On("eval", payload => {
-            console.log(" ** EVENT ** ")
-            eval(payload);
-          });
-        }
       }
 
       let updatedestfolderpref = debounce(() => 
@@ -280,19 +273,20 @@
           sourceType = "file";
           code = sourceFilePath;
         }
-        wembedcode(
-          writeFileName,
-          writeFilePath,
-          sourceType,
-          code,
-          `${document.getElementById("destFolder").value.trim()}/embed-${writeFileName}`
-        );
 
+        // This async. fakeout to allow display refresh...
+        // Not necessary with wails, but webview blocks UI updates
         setTimeout(() => {
-          button.innerText = "Done";
-          button.classList.remove("loading");
-        }, 2000);
-
+          wembedcode(
+            writeFileName,
+            writeFilePath,
+            sourceType,
+            code,
+            `${document.getElementById("destFolder").value.trim()}/embed-${writeFileName}`
+          ).then((result) => {
+              resetEmbedButtonState(result);
+          });
+        }, 500);
       }
 
       function resetEmbedButtonState(saved) {

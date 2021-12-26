@@ -73,7 +73,6 @@ func (h *AppHandler) Wembedcode(
 	// a file dialog instead.
 	selectedPath := web.SelectSavePath(writeFileName)
 	if selectedPath == "" {
-		web.MaybeExecute("resetEmbedButtonState(false)")
 		return false
 	}
 	if sourcetype == "string" {
@@ -83,7 +82,6 @@ func (h *AppHandler) Wembedcode(
 		lib.Write_content_dynamic_config(l, writepath, sourcepathorcode, selectedPath)
 	}
 
-	web.MaybeExecute("resetEmbedButtonState(true)")
 	return true
 }
 
@@ -101,5 +99,5 @@ func main() {
 	web.Instantiate(
 		debug,
 		flagDestPath,
-		&AppHandler{})
+		&AppHandler{States: make(map[string]string)})
 }

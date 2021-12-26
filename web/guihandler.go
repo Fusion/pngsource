@@ -7,3 +7,7 @@ type GUIHandler interface {
 	Wsourcecode(string, string) string
 	Wembedcode(string, string, string, string, string) bool
 }
+
+type AppHandler struct {
+	States map[string]string
+}

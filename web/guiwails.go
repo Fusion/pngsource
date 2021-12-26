@@ -8,26 +8,23 @@ import (
 	"strings"
 
 	"github.com/fusion/pngsource/assets"
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails"
 )
 
-type AppHandler struct {
-	runtime *wails.Runtime
-}
-
-var localHandler *AppHandler
-
-func (h *AppHandler) WailsInit(r *wails.Runtime) error {
-	h.runtime = r
-	return nil
-}
-
 func SelectSavePath(writeFileName string) string {
-	return localHandler.runtime.Dialog.SelectSaveFile("Save PNG File", "*.png")
-}
-
-func MaybeExecute(payload string) {
-	localHandler.runtime.Events.Emit("eval", payload)
+	selectedPath, err := zenity.SelectFileSave(
+		zenity.Title("Save File with Embed"),
+		zenity.Filename(writeFileName),
+		zenity.FileFilters{{
+			Name:     "PNG files",
+			Patterns: []string{"*.png"}}},
+		zenity.ConfirmOverwrite(),
+	)
+	if err != nil { // e.g. dialog canceled
+		return ""
+	}
+	return selectedPath
 }
 
 func Instantiate(
@@ -46,16 +43,6 @@ func Instantiate(
 		CSS:    string(css),
 		Colour: "#131313",
 	})
-
-	var itsAnInterface interface{} = &h
-	localHandler, _ := itsAnInterface.(AppHandler)
-
-	// This is a bit gross.
-	// I am registering twice:
-	// - as a localhandler, so that I can get a ref' to runtime
-	// - as a GUI handler, to wire my methods
-	app.Bind(&localHandler)
 	app.Bind(h)
-
 	app.Run()
 }

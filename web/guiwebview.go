@@ -11,9 +11,6 @@ import (
 	"github.com/webview/webview"
 )
 
-type AppHandler struct {
-}
-
 func SelectSavePath(writeFileName string) string {
 	selectedPath, err := zenity.SelectFileSave(
 		zenity.Title("Save File with Embed"),
@@ -30,10 +27,6 @@ func SelectSavePath(writeFileName string) string {
 }
 
 var w webview.WebView
-
-func MaybeExecute(payload string) {
-	w.Eval(payload)
-}
 
 func Instantiate(
 	debug bool,
