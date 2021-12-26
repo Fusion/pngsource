@@ -1,6 +1,7 @@
 GO ?= 1.17.2
 BRANCH ?= main
 VERSION ?= 0.0.0
+TARGET ?= webview
 
 help:
 	@echo "cli|dev|css|platforms|release"
@@ -24,19 +25,19 @@ macoscli:
 cli: linuxcli windowscli macoscli
 
 devweb:
-	@go run pngsource/webview.go
+	@go run pngsource/gui.go
 
 css:
 	@yarn css
 
 # Assuming Linux... yup.
 buildlinuxapp:
-	@go build -o dist/linux/pngsourceapp pngsource/webview.go
+	@go build --tags $(TARGET) -o dist/linux/pngsourceapp pngsource/gui.go
 
 linuxapp: buildlinuxapp
 
 buildwindowsapp:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows --ldflags="-H windowsgui" --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
+	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/windows --ldflags="-H windowsgui" --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
 
 packagewindowsapp:
 	@cp -r packaging/windows/* dist/windows/ \
@@ -47,7 +48,7 @@ packagewindowsapp:
 windowsapp: buildwindowsapp packagewindowsapp
 
 buildmacosapp:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
+	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
 
 packagemacosapp:
 	@rm -rf dist/macos/pngsource.app  \

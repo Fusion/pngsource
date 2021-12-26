@@ -149,6 +149,19 @@
         };
       }
 
+      function fixBinds() {
+        // Map bridge if wail is our active framework
+        if(typeof wlog != "undefined") {
+          return;
+        }
+
+        if(typeof backend != "undefined" && typeof backend.AppHandler != "undefined") {
+          for (let [fnname, fndef] of Object.entries(backend.AppHandler)) {
+            window[fnname.toLowerCase()] = fndef;
+          }
+        }
+      }
+
       let updatedestfolderpref = debounce(() => 
         wupdatedestfolderpref(document.getElementById("destFolder").value.trim()));
 
@@ -244,6 +257,8 @@
       }
 
       function writeEmbed() {
+        fixBinds();
+
         let button = document.getElementById("embedcodebutton");
         button.innerText = "Embedding";
         button.classList.add("loading");
@@ -258,19 +273,20 @@
           sourceType = "file";
           code = sourceFilePath;
         }
-        wembedcode(
-          writeFileName,
-          writeFilePath,
-          sourceType,
-          code,
-          `${document.getElementById("destFolder").value.trim()}/embed-${writeFileName}`
-        );
 
+        // This async. fakeout to allow display refresh...
+        // Not necessary with wails, but webview blocks UI updates
         setTimeout(() => {
-          button.innerText = "Done";
-          button.classList.remove("loading");
-        }, 2000);
-
+          wembedcode(
+            writeFileName,
+            writeFilePath,
+            sourceType,
+            code,
+            `${document.getElementById("destFolder").value.trim()}/embed-${writeFileName}`
+          ).then((result) => {
+              resetEmbedButtonState(result);
+          });
+        }, 500);
       }
 
       function resetEmbedButtonState(saved) {
@@ -293,6 +309,9 @@
         readDropZone.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            fixBinds();
+
             for (const file of e.dataTransfer.files) {
               wlog(JSON.stringify(file.webkitRelativePath));
               if (file.type.match(/image.*/)) {
@@ -317,6 +336,9 @@
         writeDropZone.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            fixBinds();
+
             for (const file of e.dataTransfer.files) {
               wlog(JSON.stringify(file.webkitRelativePath));
               if (file.type.match(/image.*/)) {
@@ -348,6 +370,9 @@
         sourceDropZone.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            fixBinds();
+
             for (const file of e.dataTransfer.files) {
               wlog(JSON.stringify(file.webkitRelativePath));
               var reader = new FileReader();
