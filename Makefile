@@ -13,7 +13,7 @@ linuxcli:
 	@go build -o dist/linux/cli/pngsource cmd/pngsource.go 
 
 windowscli:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows/cli --ldflags="-H windowsgui" --pkg cmd --targets=windows/amd64 github.com/fusion/pngsource \
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows/cli --pkg cmd --targets=windows/amd64 github.com/fusion/pngsource \
 	&& sudo chown -R $$(id -u) dist \
 	&& mv dist/windows/cli/cmd-windows-4.0-amd64.exe dist/windows/cli/pngsource.exe
 
