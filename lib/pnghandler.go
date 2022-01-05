@@ -5,7 +5,6 @@ import (
 	"compress/flate"
 	"encoding/base64"
 	"encoding/binary"
-//	"encoding/xml"
 	"fmt"
 	"hash/crc32"
 	"io"
@@ -326,18 +325,18 @@ func write_chunk(config *Config, destFile *os.File, chunk *Chunk) error {
 }
 
 func decode_chunk(l *log.Logger, config *Config, chunk *Chunk) (string, error) {
-        if config.Verbose {
-          l.Println("Chunk size: ", chunk.ChunkLen)
-        }
-        // Brutal removal of header and footer
-        if chunk.ChunkLen < 22 + 31 {
+	if config.Verbose {
+		l.Println("Chunk size: ", chunk.ChunkLen)
+	}
+	// Brutal removal of header and footer
+	if chunk.ChunkLen < 22+31 {
 		return "", fmt.Errorf("error chunk size too small")
-        }
+	}
 	start := strings.Index(string(chunk.ChunkData), "name%3D%22Page-1%22%3E")
-        if start == -1 {
+	if start == -1 {
 		return "", fmt.Errorf("error no preamble in chunk")
-        }
-        data := string(chunk.ChunkData[start+22:chunk.ChunkLen-31])
+	}
+	data := string(chunk.ChunkData[start+22 : chunk.ChunkLen-31])
 	debased, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		return "", fmt.Errorf("error not base64 encoded")

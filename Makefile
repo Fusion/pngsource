@@ -10,7 +10,7 @@ devcli:
 	@go run cmd/pngsource.go
 
 linuxcli:
-	@go build -o dist/linux/cli/pngsource cmd/pngsource.go 
+	@go build -ldflags "-s -w" -o dist/linux/cli/pngsource cmd/pngsource.go 
 
 windowscli:
 	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows/cli --pkg cmd --targets=windows/amd64 github.com/fusion/pngsource \
@@ -18,7 +18,7 @@ windowscli:
 	&& mv dist/windows/cli/cmd-windows-4.0-amd64.exe dist/windows/cli/pngsource.exe
 
 macoscli:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --targets=darwin/arm64 github.com/fusion/pngsource \
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --ldflags="-s -w" --targets=darwin/arm64 github.com/fusion/pngsource \
 	&& sudo chown -R $$(id -u) dist \
 	&& mv dist/macos/cli/cmd-darwin-10.12-arm64 dist/macos/cli/pngsource
 
@@ -32,7 +32,7 @@ css:
 
 # Assuming Linux... yup.
 buildlinuxapp:
-	@go build --tags $(TARGET) -o dist/linux/pngsourceapp pngsource/gui.go
+	@go build --tags $(TARGET) --ldflags "-s -w" -o dist/linux/pngsourceapp pngsource/gui.go
 
 linuxapp: buildlinuxapp
 
@@ -48,7 +48,7 @@ packagewindowsapp:
 windowsapp: buildwindowsapp packagewindowsapp
 
 buildmacosapp:
-	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
+	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/macos --ldflags="-s -w" --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
 
 packagemacosapp:
 	@rm -rf dist/macos/pngsource.app  \
