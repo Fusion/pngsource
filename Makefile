@@ -40,7 +40,8 @@ buildwindowsapp:
 	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/windows --ldflags="-H windowsgui" --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
 
 packagewindowsapp:
-	@cp -r packaging/windows/* dist/windows/ \
+	@sudo chown -R $$(id -u) dist \
+	&& cp -r packaging/windows/* dist/windows/ \
 	&& cd dist/windows \
 	&& cat pngsource.nsi.tmpl | sed "s/{{VERSION}}/$(VERSION)/g"  > pngsource.nsi \
 	&& makensis pngsource.nsi
@@ -51,7 +52,8 @@ buildmacosapp:
 	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/macos --ldflags="-s -w" --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
 
 packagemacosapp:
-	@rm -rf dist/macos/pngsource.app  \
+	@sudo chown -R $$(id -u) dist \
+	&& rm -rf dist/macos/pngsource.app  \
 	&& cp -r packaging/macos/* dist/macos/  \
 	&& cat dist/macos/pngsource.app/Contents/Info.plist.tmpl | sed  "s/{{VERSION}}/$(VERSION)/g"  \
 		> dist/macos/pngsource.app/Contents/Info.plist \
