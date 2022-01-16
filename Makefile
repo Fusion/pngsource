@@ -58,7 +58,7 @@ packagemacosapp:
 	&& cat dist/macos/pngsource.app/Contents/Info.plist.tmpl | sed  "s/{{VERSION}}/$(VERSION)/g"  \
 		> dist/macos/pngsource.app/Contents/Info.plist \
 	&& mkdir -p dist/macos/pngsource.app/Contents/MacOS  \
-	&& cp dist/macos/pngsource-darwin-10.??-arm64 dist/macos/pngsource.app/Contents/MacOS/  \
+	&& cp dist/macos/pngsource-darwin-10.??-arm64 dist/macos/pngsource.app/Contents/MacOS/pngsource-darwin-arm64  \
 	&&  dd if=/dev/zero of=dist/macos/PNGSource.dmg bs=1M count=6 status=progress  \
 	&& mkfs.hfsplus -v PNGSource dist/macos/PNGSource.dmg  \
 	&& sudo mkdir -pv /mnt/dmgwork  \
