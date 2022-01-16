@@ -27,7 +27,7 @@ type Config struct {
 	Display    bool
 
 	ActionRead  string
-	ActionWrite string
+	ActionEmbed string
 	SourceFile  string
 	DestFile    string
 }
@@ -102,7 +102,7 @@ func Write_content_dynamic_config(
 
 	config := new(Config)
 	config.Display = false
-	config.ActionWrite = writePath
+	config.ActionEmbed = writePath
 	config.SourceFile = sourcePath
 	config.DestFile = destPath
 	config.Lenient = true
@@ -117,7 +117,7 @@ func Write_content_dynamic_config(
 func Write_content(l *log.Logger, config *Config) {
 	finalizeInPlace := false
 
-	imgFile, err := open_png_file(l, config.ActionWrite)
+	imgFile, err := open_png_file(l, config.ActionEmbed)
 	if err != nil {
 		l.Fatal(err)
 	}
