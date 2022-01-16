@@ -1,6 +1,6 @@
 GO ?= 1.17.2
 BRANCH ?= main
-VERSION ?= 0.0.0
+VERSION ?= 1.0.1
 TARGET ?= webview
 
 help:
@@ -10,17 +10,17 @@ devcli:
 	@go run cmd/pngsource.go
 
 linuxcli:
-	@go build -o dist/linux/cli/pngsource cmd/pngsource.go 
+	@go build -ldflags "-s -w -X 'main.Version=$(VERSION)'" -o dist/linux/cli/pngsource cmd/pngsource.go 
 
 windowscli:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows/cli --ldflags="-H windowsgui" --pkg cmd --targets=windows/amd64 github.com/fusion/pngsource \
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/windows/cli --ldflags="-X 'main.Version=$(VERSION)'" --pkg cmd --targets=windows/amd64 github.com/fusion/pngsource \
 	&& sudo chown -R $$(id -u) dist \
 	&& mv dist/windows/cli/cmd-windows-4.0-amd64.exe dist/windows/cli/pngsource.exe
 
 macoscli:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --targets=darwin/arm64 github.com/fusion/pngsource \
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --ldflags="-s -w -X 'main.Version=$(VERSION)'" --targets=darwin/arm64 github.com/fusion/pngsource \
 	&& sudo chown -R $$(id -u) dist \
-	&& mv dist/macos/cli/cmd-darwin-10.12-arm64 dist/macos/cli/pngsource
+	&& mv dist/macos/cli/cmd-darwin-10.??-arm64 dist/macos/cli/pngsource
 
 cli: linuxcli windowscli macoscli
 
@@ -32,7 +32,7 @@ css:
 
 # Assuming Linux... yup.
 buildlinuxapp:
-	@go build --tags $(TARGET) -o dist/linux/pngsourceapp pngsource/gui.go
+	@go build --tags $(TARGET) --ldflags "-s -w" -o dist/linux/pngsourceapp pngsource/gui.go
 
 linuxapp: buildlinuxapp
 
@@ -40,7 +40,8 @@ buildwindowsapp:
 	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/windows --ldflags="-H windowsgui" --pkg pngsource --targets=windows/amd64 github.com/fusion/pngsource
 
 packagewindowsapp:
-	@cp -r packaging/windows/* dist/windows/ \
+	@sudo chown -R $$(id -u) dist \
+	&& cp -r packaging/windows/* dist/windows/ \
 	&& cd dist/windows \
 	&& cat pngsource.nsi.tmpl | sed "s/{{VERSION}}/$(VERSION)/g"  > pngsource.nsi \
 	&& makensis pngsource.nsi
@@ -48,15 +49,16 @@ packagewindowsapp:
 windowsapp: buildwindowsapp packagewindowsapp
 
 buildmacosapp:
-	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/macos --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
+	@xgo --tags="$(TARGET)" --branch=$(BRANCH) --go=$(GO) --dest dist/macos --ldflags="-s -w" --pkg pngsource --targets=darwin/arm64 github.com/fusion/pngsource
 
 packagemacosapp:
-	@rm -rf dist/macos/pngsource.app  \
+	@sudo chown -R $$(id -u) dist \
+	&& rm -rf dist/macos/pngsource.app  \
 	&& cp -r packaging/macos/* dist/macos/  \
 	&& cat dist/macos/pngsource.app/Contents/Info.plist.tmpl | sed  "s/{{VERSION}}/$(VERSION)/g"  \
 		> dist/macos/pngsource.app/Contents/Info.plist \
 	&& mkdir -p dist/macos/pngsource.app/Contents/MacOS  \
-	&& cp dist/macos/pngsource-darwin-10.12-arm64 dist/macos/pngsource.app/Contents/MacOS/  \
+	&& cp dist/macos/pngsource-darwin-10.??-arm64 dist/macos/pngsource.app/Contents/MacOS/  \
 	&&  dd if=/dev/zero of=dist/macos/PNGSource.dmg bs=1M count=6 status=progress  \
 	&& mkfs.hfsplus -v PNGSource dist/macos/PNGSource.dmg  \
 	&& sudo mkdir -pv /mnt/dmgwork  \
@@ -80,4 +82,6 @@ collect:
 	&& cp dist/windows/pngsource_installer.exe dist/release/ \
 	&& cp dist/macos/PNGSource.dmg dist/release/
 
-release: cli css app collect
+releasewebview: cli css app collect
+
+release: releasewebview

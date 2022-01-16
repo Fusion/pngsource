@@ -10,6 +10,8 @@ import (
 	"github.com/fusion/pngsource/lib"
 )
 
+var Version = "unspecified"
+
 func setConfig(l *log.Logger) (*lib.Config, error) {
 	config := &lib.Config{Display: true}
 	fs := flag.NewFlagSet(filepath.Base(os.Args[0]), flag.ExitOnError)
@@ -25,14 +27,15 @@ func setConfig(l *log.Logger) (*lib.Config, error) {
 	fs.BoolVar(&config.InPlace, "i", false, "When embedding, embed in current image (no 'to' file)")
 	fs.StringVar(&config.ActionRead, "read", "", "Read image's embedded code (use '-' for stdin)")
 	fs.StringVar(&config.ActionRead, "r", "", "Read image's embedded code (use '-' for stdin)")
-	fs.StringVar(&config.ActionWrite, "embed", "", "Embed code in image")
-	fs.StringVar(&config.ActionWrite, "e", "", "Embed code in image")
+	fs.StringVar(&config.ActionEmbed, "embed", "", "Embed code in image")
+	fs.StringVar(&config.ActionEmbed, "e", "", "Embed code in image")
 	fs.StringVar(&config.SourceFile, "source", "", "File containing code to embed")
 	fs.StringVar(&config.SourceFile, "s", "", "File containing code to embed")
 	fs.StringVar(&config.DestFile, "to", "", "New file to be created with embedded code (use '-' for stdout)")
 	fs.Usage = func() {
 		w := flag.CommandLine.Output()
-		fmt.Fprintf(w, "Usage for %s:\n\n", os.Args[0])
+		fmt.Fprintf(w, "\n%s version %s\n", filepath.Base(os.Args[0]), Version)
+                fmt.Fprintf(w, "Usage:\n\n")
 		fs.PrintDefaults()
 		fmt.Fprintln(w, "\nExamples:\n")
 		fmt.Fprintf(w, "> %s --embed <your image.png> --source <source code.txt> --to <new image.png>\n", os.Args[0])
@@ -44,16 +47,16 @@ func setConfig(l *log.Logger) (*lib.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	if config.ActionRead != "" && config.ActionWrite != "" {
-		l.Fatal("You cannot provide both and read and a write action.")
+	if config.ActionRead != "" && config.ActionEmbed != "" {
+		l.Fatal("You cannot provide both and read and an embed action.")
 	}
-	if config.ActionRead == "" && config.ActionWrite == "" {
-		l.Fatal("Please specify a '--read' or '--write' action.")
+	if config.ActionRead == "" && config.ActionEmbed == "" {
+		l.Fatal("Please specify a '--read' or '--embed' action (or --help)")
 	}
-	if config.ActionWrite != "" && config.SourceFile == "" {
-		l.Fatal("You must specify a '--source' file to perform a '--write' action.")
+	if config.ActionEmbed != "" && config.SourceFile == "" {
+		l.Fatal("You must specify a '--source' file to perform a '--embed' action.")
 	}
-	if config.ActionWrite != "" && config.DestFile == "" && !config.InPlace {
+	if config.ActionEmbed != "" && config.DestFile == "" && !config.InPlace {
 		l.Fatal("You must specify a '--to' file or '--inplace' when embedding.")
 	}
 	if config.DestFile != "" && config.InPlace {
@@ -72,7 +75,7 @@ func main() {
 	if config.ActionRead != "" {
 		lib.Read_content(l, config)
 	}
-	if config.ActionWrite != "" {
+	if config.ActionEmbed != "" {
 		lib.Write_content(l, config)
 	}
 }

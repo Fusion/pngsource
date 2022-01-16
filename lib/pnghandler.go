@@ -5,7 +5,6 @@ import (
 	"compress/flate"
 	"encoding/base64"
 	"encoding/binary"
-	"encoding/xml"
 	"fmt"
 	"hash/crc32"
 	"io"
@@ -28,7 +27,7 @@ type Config struct {
 	Display    bool
 
 	ActionRead  string
-	ActionWrite string
+	ActionEmbed string
 	SourceFile  string
 	DestFile    string
 }
@@ -63,7 +62,7 @@ func Read_content(l *log.Logger, config *Config) string {
 			l.Println("Found chunk type: ", chunk.ChunkType)
 		}
 		if strings.ToLower(chunk.ChunkType) == "text" {
-			content, err = decode_chunk(chunk)
+			content, err = decode_chunk(l, config, chunk)
 			if err != nil {
 				l.Fatal(err)
 			}
@@ -103,7 +102,7 @@ func Write_content_dynamic_config(
 
 	config := new(Config)
 	config.Display = false
-	config.ActionWrite = writePath
+	config.ActionEmbed = writePath
 	config.SourceFile = sourcePath
 	config.DestFile = destPath
 	config.Lenient = true
@@ -118,7 +117,7 @@ func Write_content_dynamic_config(
 func Write_content(l *log.Logger, config *Config) {
 	finalizeInPlace := false
 
-	imgFile, err := open_png_file(l, config.ActionWrite)
+	imgFile, err := open_png_file(l, config.ActionEmbed)
 	if err != nil {
 		l.Fatal(err)
 	}
@@ -325,41 +324,28 @@ func write_chunk(config *Config, destFile *os.File, chunk *Chunk) error {
 	return nil
 }
 
-func decode_chunk(chunk *Chunk) (string, error) {
-	decoded, err := url.QueryUnescape(string(chunk.ChunkData))
-	if err != nil {
-		return "", fmt.Errorf("error cannot unescape data")
+func decode_chunk(l *log.Logger, config *Config, chunk *Chunk) (string, error) {
+	if config.Verbose {
+		l.Println("Chunk size: ", chunk.ChunkLen)
 	}
-
-	start := strings.Index(decoded, "<mxfile ")
+	// Brutal removal of header and footer
+	if chunk.ChunkLen < 22+31 {
+		return "", fmt.Errorf("error chunk size too small")
+	}
+	start := strings.Index(string(chunk.ChunkData), "name%3D%22Page-1%22%3E")
 	if start == -1 {
-		return "", fmt.Errorf("error not an mxfile field")
+		return "", fmt.Errorf("error no preamble in chunk")
 	}
-
-	decodedXml := decoded[start:]
-
-	var x XmlChunk
-	err = xml.Unmarshal([]byte(decodedXml), &x)
-	if err != nil {
-		return "", fmt.Errorf("error unknown content")
-	}
-
-	// Yes this is a bit lazy: performing a global QueryUnescape/1 call means that
-	// + signs were replaced with spaces...
-	debased, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(x.Diagram, " ", "+"))
+	data := string(chunk.ChunkData[start+22 : chunk.ChunkLen-31])
+	debased, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		return "", fmt.Errorf("error not base64 encoded")
 	}
-
 	deflated, err := ioutil.ReadAll(flate.NewReader(bytes.NewReader(debased)))
 	if err != nil {
 		return "", fmt.Errorf("error not deflate mode")
 	}
-	content, err := (url.QueryUnescape(string(deflated)))
-	if err != nil {
-		return "", fmt.Errorf("error unescaping")
-	}
-	return content, nil
+	return string(deflated), nil
 }
 
 func chunk_CRC(chunkType []byte, chunkData []byte) uint32 {
