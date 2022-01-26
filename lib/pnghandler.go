@@ -339,7 +339,12 @@ func decode_chunk(l *log.Logger, config *Config, chunk *Chunk) (string, error) {
 	data := string(chunk.ChunkData[start+22 : chunk.ChunkLen-31])
 	debased, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		return "", fmt.Errorf("error not base64 encoded")
+		// Is this a draw.io urlencoded file?
+		uddata, _ := url.QueryUnescape(data)
+		debased, err = base64.StdEncoding.DecodeString(uddata)
+		if err != nil {
+			return "", fmt.Errorf("error not base64 encoded")
+		}
 	}
 	deflated, err := ioutil.ReadAll(flate.NewReader(bytes.NewReader(debased)))
 	if err != nil {
