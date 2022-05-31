@@ -42,6 +42,17 @@ Full-on release:
 
 `make release` instead of `make platforms`
 
+## Build dependencies
+
+- hfsplus (OS package)
+- hfsplus support in your kernel... you may have to rebuild a new kernel with `CONFIG_HFS_FS=y`
+- pkg-config (OS package)
+- libgtk-3-dev (OS package)
+- libwebkit2gtk-4.0-dev (OS package)
+- zip (OS package)
+- nsis nsis-doc nsis-pluginapi (OS packages, Windows packager)
+- yarn: `yarn install`
+
 # FAQ
 
 **Is this an Electron app?**
