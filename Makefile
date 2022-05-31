@@ -18,7 +18,7 @@ windowscli:
 	&& mv dist/windows/cli/cmd-windows-4.0-amd64.exe dist/windows/cli/pngsource.exe
 
 macoscli:
-	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --ldflags="-s -w -X 'main.Version=$(VERSION)'" --targets=darwin/arm64 github.com/fusion/pngsource \
+	@xgo --branch=$(BRANCH) --go=$(GO) --dest dist/macos/cli --pkg cmd --targets=darwin/arm64 github.com/fusion/pngsource \
 	&& sudo chown -R $$(id -u) dist \
 	&& mv dist/macos/cli/cmd-darwin-10.??-arm64 dist/macos/cli/pngsource
 
