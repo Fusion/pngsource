@@ -24,6 +24,8 @@ Simply download a CLI tool for your platform, or the GUI application (installer 
 
 Run the cli command with `--help` to see what you can do. The GUI app should be self explanatory (I hope!)
 
+If you are running the application on MacOS and are getting an error  message, please check the FAQ section.
+
 # Building
 
 Only if you plan on contributing or need a different platform:
@@ -62,3 +64,11 @@ No. It is significantly smaller and less greedy than an Electron-based applicati
 **Why isn't it working for me?**
 
 Please create an issue. If possible, include the files you were working with (image and code) so that I can reproduce the issue.
+
+**Why am I getting an error message on MacOS?**
+
+You may be getting a message about the application being damaged. It is not, but the gatekeeper is blocking it. You can work around this from the shell:
+
+```
+sudo xattr -cr /Applications/pngsource.app
+```
